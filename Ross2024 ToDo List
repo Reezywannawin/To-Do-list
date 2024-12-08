@@ -1,0 +1,97 @@
+import os
+
+# File to save the tasks
+TASKS_FILE = "tasks.txt"
+
+def load_tasks():
+    """Load tasks from the file."""
+    if not os.path.exists(TASKS_FILE):
+        return []
+    with open(TASKS_FILE, "r") as f:
+        tasks = [line.strip() for line in f.readlines()]
+    return tasks
+
+def save_tasks(tasks):
+    """Save tasks to the file."""
+    with open(TASKS_FILE, "w") as f:
+        for task in tasks:
+            f.write(task + "\n")
+
+def display_tasks(tasks):
+    """Display all tasks."""
+    if not tasks:
+        print("No tasks to show.")
+    else:
+        print("Tasks List:")
+        for idx, task in enumerate(tasks, start=1):
+            print(f"{idx}. {task}")
+
+def add_task(tasks, task_description):
+    """Add a new task."""
+    tasks.append(task_description)
+    save_tasks(tasks)
+    print(f"Task added: {task_description}")
+
+def remove_task(tasks, task_index):
+    """Remove a task."""
+    if 0 <= task_index < len(tasks):
+        removed_task = tasks.pop(task_index)
+        save_tasks(tasks)
+        print(f"Task removed: {removed_task}")
+    else:
+        print("Invalid task number.")
+
+def mark_task_complete(tasks, task_index):
+    """Mark a task as complete."""
+    if 0 <= task_index < len(tasks):
+        tasks[task_index] = f"[Completed] {tasks[task_index]}"
+        save_tasks(tasks)
+        print(f"Task marked as completed: {tasks[task_index]}")
+    else:
+        print("Invalid task number.")
+
+def main():
+    """Main function to run the To-Do List application."""
+    tasks = load_tasks()
+
+    while True:
+        print("\nTo-Do List Application")
+        print("1. View tasks")
+        print("2. Add task")
+        print("3. Remove task")
+        print("4. Mark task as complete")
+        print("5. Exit")
+
+        try:
+            choice = int(input("Choose an option: "))
+        except ValueError:
+            print("Please enter a valid option.")
+            continue
+
+        if choice == 1:
+            display_tasks(tasks)
+        elif choice == 2:
+            task_description = input("Enter the task description: ")
+            add_task(tasks, task_description)
+        elif choice == 3:
+            display_tasks(tasks)
+            try:
+                task_number = int(input("Enter task number to remove: ")) - 1
+                remove_task(tasks, task_number)
+            except ValueError:
+                print("Invalid input. Please enter a valid number.")
+        elif choice == 4:
+            display_tasks(tasks)
+            try:
+                task_number = int(input("Enter task number to mark as complete: ")) - 1
+                mark_task_complete(tasks, task_number)
+            except ValueError:
+                print("Invalid input. Please enter a valid number.")
+        elif choice == 5:
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid option. Please choose a valid one.")
+
+if __name__ == "__main__":
+    main()
